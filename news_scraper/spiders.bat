@@ -1,0 +1,1 @@
+"D:\news-scraper\venv\Scripts\python.exe" "D:\news-scraper\news_scraper\main.py"
