@@ -56,7 +56,7 @@ class EnergoProSpider(scrapy.Spider):
 
         regex_date = r'\d{1,2}\.\s*\d{1,2}\.\s*\d{2,4}'
         addresses = [a[0] for a in addresses_data if a[0] != None]
-        place = ['севлиево', 'столът', 'крушево', 'курмянско']
+        place = ['севлиево', 'столът', 'крушево', 'кoрмянско']
         for i in data:
             if i['area_name'] == 'Габрово':
                 for loc in i['area_locations_for_next_48_hours']:

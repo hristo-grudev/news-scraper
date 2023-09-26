@@ -1,3 +1,6 @@
-from scrapy import cmdline
-# cmdline.execute("scrapy crawl vik_gabrovo".split())
-cmdline.execute("scrapy crawl energo_pro".split())
+import subprocess
+
+spiders = ["vik_gabrovo", "energo_pro"]
+
+for spider in spiders:
+    subprocess.run(["scrapy", "crawl", spider])
