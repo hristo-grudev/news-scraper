@@ -1,39 +1,34 @@
 import json
 import re
-from datetime import datetime
 
-import bleach
 import scrapy
-from bleach.sanitizer import Cleaner
 
 from scrapy.loader import ItemLoader
 
-from .helper import sqlite_query, proces_text
+from .helper import sqlite_query
 from ..items import NewsScraperItem
 from itemloaders.processors import TakeFirst
 
 import requests
 
-url = "https://www.energo-pro.bg/bg/profil/xhr/?method=get_interruptions&\\{\\}"
+url = "https://www.energo-pro.bg/bg/profil/xhr/?method=get_interruptions&region_id=3&type=for_next_48_hours"
 
 payload = {}
 headers = {
-    'Accept': 'application/json, text/javascript, */*; q=0.01',
-    'Accept-Language': 'en-US,en;q=0.9,bg;q=0.8',
-    'Cache-Control': 'no-cache',
-    'Connection': 'keep-alive',
-    'Content-Type': 'application/json; charset=utf-8',
-    'Cookie': 'STDXFWSID=5bkjf6al8d3v9edudvnh3p1sti',
-    'Pragma': 'no-cache',
-    'Referer': 'https://www.energo-pro.bg/bg/planirani-prekysvanija',
-    'Sec-Fetch-Dest': 'empty',
-    'Sec-Fetch-Mode': 'cors',
-    'Sec-Fetch-Site': 'same-origin',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36',
-    'X-Requested-With': 'XMLHttpRequest',
-    'sec-ch-ua': '"Chromium";v="104", " Not A;Brand";v="99", "Google Chrome";v="104"',
-    'sec-ch-ua-mobile': '?0',
-    'sec-ch-ua-platform': '"Windows"'
+        'Accept': 'application/json, text/javascript, */*; q=0.01',
+        'Accept-Language': 'en-US,en;q=0.9,bg;q=0.8',
+        'Connection': 'keep-alive',
+        'Content-Type': 'application/json; charset=utf-8',
+        'Cookie': 'STDXFWSID=asu4cq8v90dmrn5gc3ca78g02c; _ga=GA1.1.1176135259.1741074850; _ga_3DVMXYKJCR=GS1.1.1741074850.1.1.1741074869.0.0.0',
+        'Referer': 'https://www.energo-pro.bg/bg/planirani-prekysvanija',
+        'Sec-Fetch-Dest': 'empty',
+        'Sec-Fetch-Mode': 'cors',
+        'Sec-Fetch-Site': 'same-origin',
+        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36',
+        'X-Requested-With': 'XMLHttpRequest',
+        'sec-ch-ua': '"Not A(Brand";v="8", "Chromium";v="132", "Google Chrome";v="132"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"Linux"'
 }
 
 
@@ -45,7 +40,7 @@ def clean_new_line(data):
 class EnergoProSpider(scrapy.Spider):
     name = 'energo_pro'
     start_urls = [
-        'https://www.vik-gabrovo.com/avarii-i-remonti'
+        'https://www.energo-pro.bg/'
     ]
 
     def parse(self, response):
@@ -65,6 +60,7 @@ class EnergoProSpider(scrapy.Spider):
                     date = re.match(regex_date, title)
                     link = title + loc['location_id']
                     if any(p.lower() in body_clean.lower() for p in place):
+                        print(link)
                         item = ItemLoader(item=NewsScraperItem(), response=response)
                         item.default_output_processor = TakeFirst()
                         item.add_value('title', title.strip())
